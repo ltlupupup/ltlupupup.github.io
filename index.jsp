@@ -52,7 +52,10 @@ background-size: cover;">
    <div style="text-align:center">   
    <form name="form1" action="" method="post">
    <table  style="margin:auto">   
-   <tr>   		 		
+   <tr> 
+	   <td colspan="2" style="height:50px">
+   		欢迎来到羽毛球约球系统！
+   		</td>
    	</tr>
    	<tr>
    		<td>账号:</td>
