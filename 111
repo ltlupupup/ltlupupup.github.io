@@ -1,0 +1,83 @@
+用户登入
+public int memberLogin(String username,String password,String type){
+	password=MD5.MD5(password);
+	String sql = "select password from member where username='"+username+"' and type='"+type+"' and ifuse='1' ";
+	DBO dbo = new DBO();
+	dbo.open();
+	try{
+		rs = dbo.executeQuery(sql);
+		if(rs.next()){//如果有该用户名
+			String str = rs.getString("password");
+			if(str.trim().equals(password)){
+				//dbo.executeUpdate(sql2);
+				return Constant.SUCCESS;
+			}
+			else{
+				return Constant.PASSWORD_ERROR;
+			}
+		}
+		else{//如果没有
+			return Constant.NAME_ERROR;
+		}
+	}catch(Exception e){
+		return Constant.SYSTEM_ERROR;
+	}finally{
+		dbo.close();
+	}		
+}
+
+用户注册
+public int personReg(String username,String password,String type,String realname,String sex,String bir,String sheng,String city,String telphone,String email,String question,String answer,String lastip,int off,String address){ 
+	password=MD5.MD5(password);
+	String sql = "insert into member(username,password,type,regtime,ifuse,logintimes,lasttime,lastip)" +"values('"+username+"','"+password+"','"+type+"','"+date+"','"+off+"','0','"+date+"','"+lastip+"') ";
+	DBO dbo = new DBO();
+	dbo.open();
+	try{
+		int i = dbo.executeUpdate(sql);
+		if(i == 1){ 
+			rs = dbo.executeQuery("select id from member where username='"+username+"'");
+			rs.next();int mid = rs.getInt(1); String sql2 = "insert into pmember(mid,realname,sex,bir,sheng,city,telphone,email,question,answer,address)"+"values('"+mid+"','"+realname+"','"+sex+"','"+bir+"','"+sheng+"','"+city+"','"+telphone+"','"+email+"','"+question+"','"+answer+"','"+address+"')";
+			int j = dbo.executeUpdate(sql2);
+			if(j == 1)
+				return Constant.SUCCESS;elsereturnConstant.SYSTEM_ERROR;
+		}
+		else{
+			returnConstant.SYSTEM_ERROR; 
+		}
+	}catch(Exception e){ 
+		return Constant.SYSTEM_ERROR;
+	}finally{
+		dbo.close();
+	}   
+}
+
+
+后台管理
+public int adminLogin(String username,String md5password,String password,String loginip,String useros){
+	String sql = "select * from fz_admin where username = '"+username+"' and isuse='1'";
+	String sql4 = "update fz_admin set logintimes = logintimes+1 where username = '"+username+"' ";
+	DBO dbo = new DBO();
+	String pwd;
+	dbo.open();
+	try{
+		rs = dbo.executeQuery(sql);
+		if(rs.next()){
+			pwd = rs.getString("password");
+			if(pwd.trim().equals(md5password)){
+				dbo.executeUpdate(sql4);
+				return Constant.SUCCESS;
+			}
+			else{
+				return Constant.PASSWORD_ERROR;
+			}
+		}
+		else{
+			return Constant.NAME_ERROR;
+		}			
+	}catch(Exception e){
+		e.printStackTrace();
+		return Constant.SYSTEM_ERROR;
+	}finally{
+		dbo.close();
+	}	
+}
